@@ -1,33 +1,38 @@
-const usersMock = require ('../utils/mocks/users')
+const MongoLib = require('../lib/mongo')
 
 class UsersService {
-    async getUsers() {
-        const users = usersMock
+    constructor(){
+        this.collection = 'users'
+        this.mongoDB = new MongoLib()
+    }
+    async getUsers({tags}) {
+        const query = tags && {tags: {$in: tags}}
+        const users = await this.mongoDB.getAll(this.collection, query)
         return users || []
     }
 
-    async getUser() {
-        const user = usersMock.users[0]
+    async getUser({username}) {
+        const user = await this.mongoDB.get(this.collection, username)
         return user || {}
     }
 
-    async createUser() {
-        const createUserId = usersMock.users[0].id
+    async createUser({ user }) {
+        const createUserId = this.mongoDB.create(this.collection, user)
         return createUserId
     }
 
-    async updateUser() {
-        const updateUserId = usersMock.users[0].id
+    async updateUser({username, user} = {}) {
+        const updateUserId = this.mongoDB.update(this.collection, username, user)
         return updateUserId
     }
 
-    async deleteUser() {
-        const deletedUserId = usersMock.users[0].id
+    async deleteUser({username}) {
+        const deletedUserId = this.mongoDB.delete(this.collection, username)
         return deletedUserId
     }
 
     async patchUser() {
-        const patchedUserId = usersMock.users[0].id
+        const patchedUserId = this.mongoDB.patchUser
         return patchedUserId
     }
 }

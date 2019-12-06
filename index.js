@@ -5,7 +5,10 @@ const app = express()
 const {config} = require('./config/index')
 const usersAPI = require('./routes/users.js')
 
+// body parser
+app.use(express.json());
 usersAPI(app);
+
 
 app.listen(config.port, function () {
     console.log('IPs de la maquina:')

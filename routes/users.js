@@ -33,9 +33,9 @@ function usersAPI(app){
     })
 
     router.post("/", async function(req, res, next) {
-        const { username } = req.params
+        const { body: user } = req
         try {
-            const createdUserId = await usersService.createUser({username})
+            const createdUserId = await usersService.createUser({user})
             res.status(201).json({
                 data: createdUserId,
                 message: 'Usuario creado.'
