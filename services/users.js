@@ -16,12 +16,24 @@ class UsersService {
         return user || {}
     }
 
+    async getUserBy(data) {
+        const user = await this.mongoDB.getBy(this.collection, data)
+        return user || {}
+    }
+
     async createUser({ user }) {
         const createUserId = this.mongoDB.create(this.collection, user)
         return createUserId
     }
 
     async updateUser({username, user} = {}) {
+        const updateUserId = this.mongoDB.update(this.collection, username, user)
+        return updateUserId
+    }
+
+    async updateUserBy(username, user) {
+        console.log(user);
+        
         const updateUserId = this.mongoDB.update(this.collection, username, user)
         return updateUserId
     }

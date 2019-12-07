@@ -88,6 +88,53 @@ function usersAPI(app){
             next(error);
         }
     })
+    //-----------------------------RASPBERRY FUNCTIONS------------------------------
+    //Leer tarjeta
+    router.get("/card/:cardId", async function(req, res, next) {   
+        try {            
+            const user = await usersService.getUserBy({card: req.params.cardId})
+            res.status(200).json({
+                data: user[0],
+                message: `Usuario de tarjeta: ${req.params.cardId}`
+            })
+        } catch (error) {
+            next(error);
+        }
+    })
+
+    // Actualizar tarjeta
+    router.put("/:userId/:cardId/transactions", async function(req, res, next) {
+        const { body: data } = req
+        const userId = req.params.userId        
+        const cardId = req.params.cardId        
+        const valueD = parseInt(data.value, 10)
+        const storeD = data.store       
+
+        var today = new Date();
+        var dd = String(today.getDate()).padStart(2, '0');
+        var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+        var yyyy = today.getFullYear();
+        today = mm + '/' + dd + '/' + yyyy;
+        
+        const user = await usersService.getUserBy({card: cardId})        
+        let newData = {}                
+        let currBalance = parseInt(user[0].balance)
+        currBalance += valueD
+        newData.balance = currBalance              
+        
+        user[0].transactions.push({value: valueD, datetime: today, store: storeD})   
+        newData.transactions = user[0].transactions
+
+        try {
+            const updatedUserId = await usersService.updateUserBy(userId, newData)        
+            res.status(200).json({
+                data: updatedUserId,
+                message: 'Usuario actualizado.'
+            })
+        } catch (error) {
+            next(error);
+        }
+    })
 }
 
 module.exports = usersAPI
