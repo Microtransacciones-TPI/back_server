@@ -49,7 +49,7 @@ class UsersService {
         console.log(user);
         
         const valueD = parseInt(data.value, 10)
-        const storeD = user.store  
+        const storeD = data.store  
 
         var today = new Date();
         var dd = String(today.getDate()).padStart(2, '0');
